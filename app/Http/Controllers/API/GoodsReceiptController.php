@@ -7,7 +7,6 @@ use App\Http\Requests\Purchasing\CreateGoodsReceiptRequest;
 use App\Http\Resources\GoodsReceiptResource;
 use App\Models\GoodsReceipt;
 use App\Models\GoodsReceiptItem;
-use App\Services\PurchaseService;
 use Illuminate\Support\Facades\DB;
 
 class GoodsReceiptController extends Controller
@@ -18,10 +17,10 @@ class GoodsReceiptController extends Controller
         return GoodsReceiptResource::collection($list);
     }
 
-    public function store(CreateGoodsReceiptRequest $request, PurchaseService $purchase)
+    public function store(CreateGoodsReceiptRequest $request)
     {
         $data = $request->validated();
-        $gr = DB::transaction(function () use ($data, $purchase) {
+        $gr = DB::transaction(function () use ($data) {
             $gr = GoodsReceipt::create([
                 'po_id' => $data['po_id'],
                 'received_by' => $data['received_by'],
@@ -40,9 +39,6 @@ class GoodsReceiptController extends Controller
                     'notes' => $it['notes'] ?? null,
                 ]);
             }
-
-            $gr->load('items.poItem');
-            $purchase->receiveGoods($gr);
 
             return $gr->load('items');
         });

@@ -84,10 +84,10 @@ class OrderController extends Controller
         return new OrderResource($order);
     }
 
-    public function recordPayment(Order $order, RecordPaymentRequest $request, FinanceService $finance)
+    public function recordPayment(Order $order, RecordPaymentRequest $request)
     {
         $data = $request->validated();
-        $payment = DB::transaction(function () use ($order, $data, $finance) {
+        $payment = DB::transaction(function () use ($order, $data) {
             $payment = Payment::create([
                 'order_id' => $order->id,
                 'amount' => $data['amount'],
@@ -95,15 +95,6 @@ class OrderController extends Controller
                 'payment_method' => $data['payment_method'],
                 'paid_at' => $data['paid_at'] ?? now(),
             ]);
-
-            // Simple posting logic: DP -> advance; final -> sales
-            if ($data['payment_type'] === 'dp') {
-                $finance->templateAdvanceFromCustomer((float)$data['amount']);
-                $order->update(['status' => 'dp']);
-            } else {
-                $finance->templateSaleCash((float)$data['amount']);
-                // Optionally clear advances if tracked separately
-            }
 
             return $payment;
         });

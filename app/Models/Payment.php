@@ -23,4 +23,11 @@ class Payment extends Model
     {
         return $this->belongsTo(Order::class);
     }
+
+    protected static function booted(): void
+    {
+        static::created(function (Payment $payment) {
+            event(new \App\Events\PaymentCreated($payment));
+        });
+    }
 }

@@ -34,4 +34,11 @@ class GoodsReceipt extends Model
     {
         return $this->belongsTo(User::class, 'received_by');
     }
+
+    protected static function booted(): void
+    {
+        static::created(function (GoodsReceipt $gr) {
+            event(new \App\Events\GoodsReceiptCreated($gr));
+        });
+    }
 }
