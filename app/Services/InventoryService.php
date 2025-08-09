@@ -11,6 +11,9 @@ class InventoryService
 {
     public function postMaterialIn(int $materialId, int $qty, int $userId, string $desc = null): void
     {
+        if ($qty <= 0) {
+            throw new \InvalidArgumentException('Quantity must be positive for IN movement.');
+        }
         StockMovement::create([
             'material_id' => $materialId,
             'user_id' => $userId,
@@ -24,6 +27,9 @@ class InventoryService
 
     public function postMaterialOut(int $materialId, int $qty, int $userId, string $desc = null): void
     {
+        if ($qty <= 0) {
+            throw new \InvalidArgumentException('Quantity must be positive for OUT movement.');
+        }
         StockMovement::create([
             'material_id' => $materialId,
             'user_id' => $userId,
@@ -37,6 +43,9 @@ class InventoryService
 
     public function postProductOut(int $productId, int $qty, ?string $refType = null, ?int $refId = null, ?string $notes = null): void
     {
+        if ($qty <= 0) {
+            throw new \InvalidArgumentException('Quantity must be positive for OUT movement.');
+        }
         ProductStockMovement::create([
             'product_id' => $productId,
             'type' => 'out',
@@ -51,6 +60,9 @@ class InventoryService
 
     public function postProductIn(int $productId, int $qty, ?string $refType = null, ?int $refId = null, ?string $notes = null): void
     {
+        if ($qty <= 0) {
+            throw new \InvalidArgumentException('Quantity must be positive for IN movement.');
+        }
         ProductStockMovement::create([
             'product_id' => $productId,
             'type' => 'in',

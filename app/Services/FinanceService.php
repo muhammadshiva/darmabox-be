@@ -26,16 +26,28 @@ class FinanceService
             $creditSum = 0;
             foreach ($lines as $l) {
                 $acc = Account::where('code', $l['account_code'])->firstOrFail();
+                $debit = (float) ($l['debit'] ?? 0);
+                $credit = (float) ($l['credit'] ?? 0);
                 $je = JournalEntry::create([
                     'journal_id' => $journal->id,
                     'account_id' => $acc->id,
-                    'debit' => $l['debit'] ?? 0,
-                    'credit' => $l['credit'] ?? 0,
+                    'debit' => $debit,
+                    'credit' => $credit,
                 ]);
-                $debitSum += ($l['debit'] ?? 0);
-                $creditSum += ($l['credit'] ?? 0);
+                $debitSum += $debit;
+                $creditSum += $credit;
 
-                $balanceAfter = ($l['debit'] ?? 0) - ($l['credit'] ?? 0);
+                // Running balance policy: Asset/Expense increase on debit; Liability/Equity/Revenue increase on credit
+                $sign = in_array($acc->type, ['Asset', 'Expense'], true) ? 1 : -1;
+                $delta = $sign * ($debit - $credit);
+
+                $last = LedgerEntry::where('account_id', $acc->id)
+                    ->orderByDesc('date')
+                    ->orderByDesc('id')
+                    ->first();
+                $prevBalance = $last?->balance_after ?? 0.0;
+                $balanceAfter = $prevBalance + $delta;
+
                 LedgerEntry::create([
                     'account_id' => $acc->id,
                     'journal_entry_id' => $je->id,
@@ -65,6 +77,22 @@ class FinanceService
         return $this->postJournal('COGS Posting', [
             ['account_code' => '5000', 'debit' => $cogsAmount, 'credit' => 0],
             ['account_code' => '1310', 'debit' => 0, 'credit' => $cogsAmount],
+        ]);
+    }
+
+    public function templateAdvanceFromCustomer(float $amount): int
+    {
+        return $this->postJournal('Customer Down Payment', [
+            ['account_code' => '1000', 'debit' => $amount, 'credit' => 0],
+            ['account_code' => '2200', 'debit' => 0, 'credit' => $amount],
+        ]);
+    }
+
+    public function templateAdvanceClearing(float $amount): int
+    {
+        return $this->postJournal('Advance Clearing to Sales', [
+            ['account_code' => '2200', 'debit' => $amount, 'credit' => 0],
+            ['account_code' => '4000', 'debit' => 0, 'credit' => $amount],
         ]);
     }
 }
