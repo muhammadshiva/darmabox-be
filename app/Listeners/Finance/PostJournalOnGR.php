@@ -13,7 +13,7 @@ class PostJournalOnGR
     {
         $gr = $event->goodsReceipt;
 
-        // For simplicity: Debit Inventory (1300/1310) and Credit GR/IR (2100) by total item value
+        // Debit Inventory (1300/1310) and Credit GR/IR (2100) by total item value
         $gr->load('items.poItem');
         $materialTotal = 0.0;
         $productTotal = 0.0;

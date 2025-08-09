@@ -13,7 +13,7 @@ use Filament\Tables\Table;
 class MaterialResource extends Resource
 {
     protected static ?string $model = Material::class;
-    protected static ?string $navigationGroup = 'Masters';
+    protected static ?string $navigationGroup = 'Inventory';
     protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-list';
 
     public static function form(Form $form): Form

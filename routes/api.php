@@ -11,6 +11,7 @@ use App\Http\Controllers\API\MaterialController;
 use App\Http\Controllers\API\PurchaseOrderController;
 use App\Http\Controllers\API\AccountController;
 use App\Http\Controllers\API\JournalController;
+use App\Http\Controllers\API\InvoiceReceiptController;
 
 Route::post('/auth/login', [AuthController::class, 'login']);
 
@@ -35,6 +36,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('purchase-orders', PurchaseOrderController::class)->except(['edit', 'create']);
     Route::get('/goods-receipts', [GoodsReceiptController::class, 'index']);
     Route::post('/goods-receipts', [GoodsReceiptController::class, 'store']);
+    Route::get('/invoice-receipts', [InvoiceReceiptController::class, 'index']);
+    Route::post('/invoice-receipts', [InvoiceReceiptController::class, 'store']);
 
     // Finance
     Route::apiResource('accounts', AccountController::class)->except(['edit', 'create']);

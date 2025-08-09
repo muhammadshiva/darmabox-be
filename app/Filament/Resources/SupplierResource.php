@@ -13,7 +13,7 @@ use Filament\Tables\Table;
 class SupplierResource extends Resource
 {
     protected static ?string $model = Supplier::class;
-    protected static ?string $navigationGroup = 'Masters';
+    protected static ?string $navigationGroup = 'Users';
     protected static ?string $navigationIcon = 'heroicon-o-truck';
 
     public static function form(Form $form): Form

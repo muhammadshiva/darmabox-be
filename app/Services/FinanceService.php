@@ -80,6 +80,14 @@ class FinanceService
         ]);
     }
 
+    public function templateGrToAp(float $amount): int
+    {
+        return $this->postJournal('GR/IR Clearing to AP', [
+            ['account_code' => '2100', 'debit' => $amount, 'credit' => 0],
+            ['account_code' => '2000', 'debit' => 0, 'credit' => $amount],
+        ]);
+    }
+
     public function templateAdvanceFromCustomer(float $amount): int
     {
         return $this->postJournal('Customer Down Payment', [

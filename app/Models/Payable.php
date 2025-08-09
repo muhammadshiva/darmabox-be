@@ -15,6 +15,7 @@ class Payable extends Model
         'supplier_id',
         'po_id',
         'gr_id',
+        'ir_id',
         'amount',
         'remaining_amount',
         'due_date',
@@ -35,5 +36,10 @@ class Payable extends Model
     public function goodsReceipt()
     {
         return $this->belongsTo(GoodsReceipt::class, 'gr_id');
+    }
+
+    public function invoiceReceipt()
+    {
+        return $this->belongsTo(InvoiceReceipt::class, 'ir_id');
     }
 }

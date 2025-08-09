@@ -47,4 +47,11 @@ class Order extends Model
     {
         return $this->hasOne(Receivable::class);
     }
+
+    public function getPaymentStatusAttribute(): string
+    {
+        $total = (float) ($this->total_amount ?? 0);
+        $paid = (float) ($this->payments()->sum('amount'));
+        return $paid >= $total && $total > 0 ? 'paid' : 'pending';
+    }
 }
