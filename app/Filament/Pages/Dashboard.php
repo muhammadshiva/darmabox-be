@@ -10,12 +10,12 @@ class Dashboard extends BaseDashboard
 
     public function getHeading(): string
     {
-        return 'Dashboard Overview';
+        return 'Dashboard';
     }
 
     public function getSubheading(): ?string
     {
-        return "Welcome back! Here's what's happening today.";
+        return "Welcome back! Here's an overview of your business operations.";
     }
 
     public function getColumns(): int | array
@@ -27,10 +27,9 @@ class Dashboard extends BaseDashboard
     {
         return [
             \App\Filament\Widgets\DashboardStats::class,
+            \App\Filament\Widgets\QuickActions::class,
             \App\Filament\Widgets\RecentOrders::class,
-            \App\Filament\Widgets\ProductionStatus::class,
             \App\Filament\Widgets\LowStockAlerts::class,
         ];
     }
 }
-

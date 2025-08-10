@@ -11,7 +11,7 @@ class LowStockAlerts extends BaseWidget
 {
     protected function getHeading(): string
     {
-        return 'Low Stock Alerts';
+        return 'Low Stock Materials';
     }
 
     protected int | string | array $columnSpan = 12;
@@ -26,11 +26,16 @@ class LowStockAlerts extends BaseWidget
     protected function getTableColumns(): array
     {
         return [
-            Tables\Columns\TextColumn::make('name')->label('Item'),
-            Tables\Columns\TextColumn::make('stock')->label('Units Left')
-                ->formatStateUsing(fn($state) => (string) $state)
-                ->badge()
-                ->color(fn($state) => $state <= 5 ? 'danger' : ($state <= 12 ? 'warning' : 'success')),
+            Tables\Columns\TextColumn::make('name')->label('Material'),
+            Tables\Columns\TextColumn::make('stock')->label('Current'),
+            Tables\Columns\TextColumn::make('minimum_stock')->label('Min'),
+            Tables\Columns\BadgeColumn::make('status')
+                ->label('Status')
+                ->getStateUsing(fn(\App\Models\Material $record) => $record->stock <= $record->minimum_stock ? 'Low' : 'OK')
+                ->colors([
+                    'danger' => 'Low',
+                    'success' => 'OK',
+                ]),
         ];
     }
 }

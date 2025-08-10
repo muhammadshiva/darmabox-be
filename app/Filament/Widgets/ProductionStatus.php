@@ -9,10 +9,7 @@ use Illuminate\Database\Eloquent\Builder;
 
 class ProductionStatus extends BaseWidget
 {
-    protected int | string | array $columnSpan = [
-        'md' => 6,
-        'xl' => 6,
-    ];
+    protected int | string | array $columnSpan = 12;
 
     protected function getTableHeading(): string
     {
