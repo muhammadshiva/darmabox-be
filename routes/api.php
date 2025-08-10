@@ -12,6 +12,7 @@ use App\Http\Controllers\API\PurchaseOrderController;
 use App\Http\Controllers\API\AccountController;
 use App\Http\Controllers\API\JournalController;
 use App\Http\Controllers\API\InvoiceReceiptController;
+use App\Http\Controllers\API\ProductionTaskController;
 
 Route::post('/auth/login', [AuthController::class, 'login']);
 
@@ -42,4 +43,9 @@ Route::middleware('auth:sanctum')->group(function () {
     // Finance
     Route::apiResource('accounts', AccountController::class)->except(['edit', 'create']);
     Route::apiResource('journals', JournalController::class)->only(['index', 'store', 'show']);
+
+    // Production Planning
+    Route::apiResource('production-tasks', ProductionTaskController::class)->except(['create', 'edit']);
+    Route::post('/production-tasks/{productionTask}/attachments', [ProductionTaskController::class, 'uploadAttachment']);
+    Route::delete('/production-tasks/{productionTask}/attachments/{attachmentId}', [ProductionTaskController::class, 'deleteAttachment']);
 });
